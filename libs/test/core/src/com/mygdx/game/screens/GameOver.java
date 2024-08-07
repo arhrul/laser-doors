@@ -30,14 +30,17 @@ public class GameOver implements Screen {
 
     private float screenWidth, screenHeight;
 
+    String levelPath;
 
     /**
      * Game over screen.
      * @param game game
      */
-    public GameOver(LaserDoorsGame game) {
+    public GameOver(LaserDoorsGame game, String levelPath) {
         this.game = game;
         this.batch = new SpriteBatch();
+
+        this.levelPath = levelPath;
 
         this.btnRestartWidth = buttonRestart.getWidth();
         this.btnRestartHeight = buttonRestart.getHeight();
@@ -84,7 +87,10 @@ public class GameOver implements Screen {
         if (this.isButtonRestart()) {
             this.batch.draw(buttonRestartDown, buttonRestartX, buttonRestartY);
             if (Gdx.input.isTouched()) {
-                game.setScreen(new GameScreen(game, "tiled/map1.tmx"));
+                this.game.getSoundSettings().playClickSound();
+                this.game.getSkinSettings().resetColor();
+                game.setScreen(new GameScreen(game,
+                        GameScreen.getLevels().get(GameScreen.getLevels().indexOf(levelPath) - 1)));
             }
         }
         else {
@@ -106,6 +112,8 @@ public class GameOver implements Screen {
         if (this.isButtonMenu()) {
             this.batch.draw(buttonMenuDown, buttonMenuX, buttonMenuY);
             if (Gdx.input.isTouched()) {
+                this.game.getSoundSettings().playClickSound();
+                this.game.getSkinSettings().resetColor();
                 game.setScreen(new MainMenu(this.game));
             }
         } else {

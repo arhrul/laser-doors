@@ -2,12 +2,15 @@ package com.mygdx.game.screens;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -27,14 +30,26 @@ import java.util.List;
 public class GameScreen implements Screen {
     private LaserDoorsGame game;
 
+    private float screenWidth, screenHeight;
+
     private SpriteBatch batch;
     private BitmapFont font;
+
+    private FreeTypeFontGenerator generator;
+    private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 
     private String mapPath;
 
     private Player player;
 
-    private Texture playerCurrentTexture = new Texture("playerStandard.png");
+//    private Texture playerCurrentTexture;
+    private Texture hudTexture = new Texture("hud.png");
+    private float hudWidth, hudHeight;
+    private float hudX, hudY;
+
+    private String timerText;
+    private float timerTextWidth;
+    private float timerTextHeight;
 
     private Vector2 playerSpawn;
 
@@ -70,6 +85,8 @@ public class GameScreen implements Screen {
 
     private Texture backgroundTexture = new Texture("background.jpg");
 
+    private GlyphLayout layout = new GlyphLayout();
+
     /**
      * Game screen constructor.
      *
@@ -78,11 +95,27 @@ public class GameScreen implements Screen {
      */
     public GameScreen(LaserDoorsGame game, String mapPath) {
         this.game = game;
+
+        this.screenWidth = Gdx.graphics.getWidth();
+        this.screenHeight = Gdx.graphics.getHeight();
+
         this.camera = new OrthographicCamera();
         this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.batch = new SpriteBatch();
-        this.font = new BitmapFont();
         this.mapPath = mapPath;
+
+        this.generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/RadiantKingdom-mL5eV.ttf"));
+        this.parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        this.parameter.color = Color.WHITE;
+        this.parameter.size = 40;
+        this.font = generator.generateFont(parameter);
+
+        this.hudWidth = this.hudTexture.getWidth();
+        this.hudHeight = this.hudTexture.getHeight();
+        this.hudX = this.screenWidth / 2 - hudWidth / 2;
+        this.hudY = this.screenHeight - hudHeight;
+
+//        this.playerCurrentTexture = new Texture(this.game.getSkinSettings().getStandardCurrentSkinPath());
     }
 
     /**
@@ -111,9 +144,9 @@ public class GameScreen implements Screen {
      *
      * @param playerCurrentTexture new player texture
      */
-    public void setPlayerCurrentTexture(Texture playerCurrentTexture) {
-        this.playerCurrentTexture = playerCurrentTexture;
-    }
+//    public void setPlayerCurrentTexture(Texture playerCurrentTexture) {
+//        this.playerCurrentTexture = playerCurrentTexture;
+//    }
 
     /**
      * Get all levels.
@@ -170,7 +203,7 @@ public class GameScreen implements Screen {
             playerY = playerSpawn.y;
         }
 
-        this.player = new Player(this, playerX, playerY, 200f, playerCurrentTexture);
+        this.player = new Player(this, playerX, playerY, 200f);
 
         loadMapObjects(offsetX, offsetY);
     }
@@ -220,6 +253,11 @@ public class GameScreen implements Screen {
 
         timePassed += Gdx.graphics.getDeltaTime();
 
+        this.timerText = "Time: " + Math.round(timePassed * 10.0) / 10.0;
+        layout.setText(font, timerText);
+        timerTextWidth = layout.width;
+        timerTextHeight = layout.height;
+
         batch.begin();
         batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
@@ -231,11 +269,13 @@ public class GameScreen implements Screen {
         batch.begin();
         player.update(delta);
         player.render(batch);
-        font.draw(batch, "Time: " + Math.round(timePassed * 10.0) / 10.0, 25, 630);
+        batch.draw(new Texture("HUD.png"), hudX, hudY);
+        font.draw(batch, timerText, screenWidth / 2 - timerTextWidth / 2, screenHeight - 20);
         batch.end();
 
+//        this.setPlayerCurrentTexture(player.getCurrentTexture());
+
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            this.setPlayerCurrentTexture(player.getCurrentTexture());
             game.setScreen(new Pause(game, this));
         }
     }
@@ -263,7 +303,7 @@ public class GameScreen implements Screen {
     public void dispose() {
         batch.dispose();
         font.dispose();
-        playerCurrentTexture.dispose();
+//        playerCurrentTexture.dispose();
         backgroundTexture.dispose();
         map.dispose();
         player.dispose();

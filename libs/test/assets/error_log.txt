@@ -1,0 +1,15 @@
+Error Message: Uncaught exception in thread main
+java.lang.IndexOutOfBoundsException: Index -2 out of bounds for length 5
+	at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:64)
+	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:70)
+	at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:266)
+	at java.base/java.util.Objects.checkIndex(Objects.java:359)
+	at java.base/java.util.ArrayList.get(ArrayList.java:427)
+	at com.mygdx.game.screens.YouWin.restartLevel(YouWin.java:146)
+	at com.mygdx.game.screens.YouWin.render(YouWin.java:118)
+	at com.badlogic.gdx.Game.render(Game.java:48)
+	at com.mygdx.game.LaserDoorsGame.render(LaserDoorsGame.java:38)
+	at com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window.update(Lwjgl3Window.java:387)
+	at com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application.loop(Lwjgl3Application.java:193)
+	at com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application.<init>(Lwjgl3Application.java:167)
+	at com.mygdx.game.DesktopLauncher.main(DesktopLauncher.java:21)

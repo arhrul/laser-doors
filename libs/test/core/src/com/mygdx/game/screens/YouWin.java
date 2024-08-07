@@ -126,6 +126,8 @@ public class YouWin implements Screen {
         if (this.isButtonNext()) {
             this.batch.draw(buttonNextLevelDown, buttonNextLevelX, buttonNextLevelY);
             if (Gdx.input.isTouched()) {
+                this.game.getSoundSettings().playClickSound();
+                this.game.getSkinSettings().resetColor();
                 game.setScreen(new GameScreen(game, levelPath));
             }
         } else {
@@ -139,9 +141,11 @@ public class YouWin implements Screen {
      * Checks and handles the logic for restarting the current level.
      */
     public void restartLevel() {
-        if (this.isButtonRestart()) {
+        if (this.isButtonRestart() && !Objects.equals(levelPath, "LastLevel")) {
             this.batch.draw(buttonRestartDown, buttonRestartX, buttonRestartY);
             if (Gdx.input.isTouched()) {
+                this.game.getSoundSettings().playClickSound();
+                this.game.getSkinSettings().resetColor();
                 game.setScreen(new GameScreen(game,
                         GameScreen.getLevels().get(GameScreen.getLevels().indexOf(levelPath) - 1)));
             }
@@ -184,6 +188,8 @@ public class YouWin implements Screen {
         if (this.isButtonMenu()) {
             this.batch.draw(buttonMenuDown, buttonMenuX, buttonMenuY);
             if (Gdx.input.isTouched()) {
+                this.game.getSoundSettings().playClickSound();
+                this.game.getSkinSettings().resetColor();
                 game.setScreen(new MainMenu(this.game));
             }
         } else {

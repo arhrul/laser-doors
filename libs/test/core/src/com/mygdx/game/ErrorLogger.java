@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 public class ErrorLogger {
 
     public static void logError(String message, Throwable throwable) {
-        try (FileWriter fileWriter = new FileWriter("error_log.txt", true); 
+        try (FileWriter fileWriter = new FileWriter("error_log.txt", false);
              PrintWriter printWriter = new PrintWriter(fileWriter)) {
             printWriter.println("Error Message: " + message);
             throwable.printStackTrace(printWriter);

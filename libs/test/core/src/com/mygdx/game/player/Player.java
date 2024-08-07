@@ -1,5 +1,6 @@
 package com.mygdx.game.player;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,10 +19,12 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Player {
-    private Texture textureRed = new Texture("playerRed.png");
-    private Texture textureGreen = new Texture("playerGreen.png");
+    private Texture textureStandard;
+    private Texture textureRed;
+    private Texture textureGreen;
 
     private Texture currentTexture;
+    private String currentColor;
 
     private GameScreen gameScreen;
 
@@ -49,6 +52,11 @@ public class Player {
     private DoorTypes doorType;
     private Directions currentDirection;
 
+    private String keyUp;
+    private String keyDown;
+    private String keyLeft;
+    private String keyRight;
+
 
     /**
      * Player constructor.
@@ -58,7 +66,7 @@ public class Player {
      * @param y          y
      * @param speed      speed
      */
-    public Player(GameScreen gameScreen, float x, float y, float speed, Texture currentTexture) {
+    public Player(GameScreen gameScreen, float x, float y, float speed) {
         this.playerWidth = 32;
         this.playerHeight = 32;
         this.position = new Vector2(x, y);
@@ -67,7 +75,11 @@ public class Player {
         this.speed = speed;
         this.bounds = new Rectangle(x, y, playerWidth, playerHeight);
         this.gameScreen = gameScreen;
-        this.currentTexture = currentTexture;
+
+        this.textureStandard = this.gameScreen.getGame().getSkinSettings().getStandardCurrentSkin();
+        this.textureRed = this.gameScreen.getGame().getSkinSettings().getRedCurrentSkin();
+        this.textureGreen = this.gameScreen.getGame().getSkinSettings().getGreenCurrentSkin();
+        this.currentTexture = textureStandard;
     }
 
     /**
@@ -76,10 +88,11 @@ public class Player {
      * @param delta delta time
      */
     public void update(float delta) {
+        updateKeys();
         lastPosition = new Vector2(position.x, position.y);
-        if (Gdx.input.isKeyPressed(Input.Keys.A) && !prohibitMovingLeft) {
+        if (Gdx.input.isKeyPressed(Input.Keys.valueOf(keyLeft.toUpperCase())) && !prohibitMovingLeft) {
             velocity.x -= acceleration * delta;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.D) && !prohibitMovingRight) {
+        } else if (Gdx.input.isKeyPressed(Input.Keys.valueOf(keyRight.toUpperCase())) && !prohibitMovingRight) {
             velocity.x += acceleration * delta;
         } else {
             if (velocity.x > 0) {
@@ -91,9 +104,9 @@ public class Player {
             }
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W) && !prohibitMovingUp) {
+        if (Gdx.input.isKeyPressed(Input.Keys.valueOf(keyUp.toUpperCase())) && !prohibitMovingUp) {
             velocity.y += acceleration * delta;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.S) && !prohibitMovingDown) {
+        } else if (Gdx.input.isKeyPressed(Input.Keys.valueOf(keyDown.toUpperCase())) && !prohibitMovingDown) {
             velocity.y -= acceleration * delta;
         } else {
             if (velocity.y > 0) {
@@ -134,6 +147,21 @@ public class Player {
         checkStandardFinish();
         checkHorizontalDoors();
         checkVerticalDoors();
+        updateTexture();
+    }
+
+    public void updateTexture() {
+        this.textureStandard = this.gameScreen.getGame().getSkinSettings().getStandardCurrentSkin();
+        this.textureRed = this.gameScreen.getGame().getSkinSettings().getRedCurrentSkin();
+        this.textureGreen = this.gameScreen.getGame().getSkinSettings().getGreenCurrentSkin();
+        this.currentTexture = this.gameScreen.getGame().getSkinSettings().getCurrentSkinTexture();
+    }
+
+    public void updateKeys() {
+        this.keyUp = this.gameScreen.getGame().getControlSettings().getUp();
+        this.keyDown = this.gameScreen.getGame().getControlSettings().getDown();
+        this.keyLeft = this.gameScreen.getGame().getControlSettings().getLeft();
+        this.keyRight = this.gameScreen.getGame().getControlSettings().getRight();
     }
 
     /**
@@ -204,15 +232,6 @@ public class Player {
     }
 
     /**
-     * Check finish.
-     *
-     * @param rectangle type of finish
-     */
-    public void checkFinish(Rectangle rectangle) {
-
-    }
-
-    /**
      * Check standard finish.
      */
     public void checkStandardFinish() {
@@ -240,7 +259,7 @@ public class Player {
         for (Rectangle rectangle : this.gameScreen.getRedFinishRectangles()) {
             if (rectangle.overlaps(bounds)) {
                 if (this.currentTexture == textureRed) {
-                    this.gameScreen.getGame().setScreen(new GameOver(this.gameScreen.getGame()));
+                    this.gameScreen.getGame().setScreen(new GameOver(this.gameScreen.getGame(), GameScreen.getLevels().get(this.gameScreen.getCurrentLevel())));
                 } else {
                     this.saveTime();
                     String path = checkStars();
@@ -265,7 +284,7 @@ public class Player {
         for (Rectangle rectangle : this.gameScreen.getGreenFinishRectangles()) {
             if (rectangle.overlaps(bounds)) {
                 if (this.currentTexture == textureGreen) {
-                    this.gameScreen.getGame().setScreen(new GameOver(this.gameScreen.getGame()));
+                    this.gameScreen.getGame().setScreen(new GameOver(this.gameScreen.getGame(), GameScreen.getLevels().get(this.gameScreen.getCurrentLevel() + 1)));
                 } else {
                     this.saveTime();
                     String path = checkStars();
@@ -310,10 +329,12 @@ public class Player {
             if (bounds.overlaps(rectangle)) {
                 onRedDoor = true;
                 if (!Objects.equals(currentTexture.toString(), textureRed.toString())) {
-                    currentTexture = textureRed;
+                    this.gameScreen.getGame().getSkinSettings().setCurrentColor("Red");
+                    currentTexture = this.gameScreen.getGame().getSkinSettings().getRedCurrentSkin();
+                    this.gameScreen.getGame().getSoundSettings().playDoorSound();
                 } else {
                     if (!wasOnRedDoor) {
-                        gameScreen.getGame().setScreen(new GameOver(gameScreen.getGame()));
+                        gameScreen.getGame().setScreen(new GameOver(gameScreen.getGame(), GameScreen.getLevels().get(this.gameScreen.getCurrentLevel() + 1)));
                     }
                 }
                 prohibitMovementBack();
@@ -325,11 +346,13 @@ public class Player {
             if (bounds.overlaps(rectangle)) {
                 onGreenDoor = true;
                 if (!Objects.equals(currentTexture.toString(), textureGreen.toString())) {
-                    currentTexture = textureGreen;
+                    this.gameScreen.getGame().getSkinSettings().setCurrentColor("Green");
+                    currentTexture = this.gameScreen.getGame().getSkinSettings().getGreenCurrentSkin();
+                    this.gameScreen.getGame().getSoundSettings().playDoorSound();
 
                 } else {
                     if (!wasOnGreenDoor) {
-                        gameScreen.getGame().setScreen(new GameOver(gameScreen.getGame()));
+                        gameScreen.getGame().setScreen(new GameOver(gameScreen.getGame(), GameScreen.getLevels().get(this.gameScreen.getCurrentLevel() + 1)));
                     }
                 }
                 prohibitMovementBack();
@@ -405,39 +428,39 @@ public class Player {
     public void setCurrentDirection(Vector2 currentPos, Vector2 lastPos) {
         if (currentPos.x - lastPos.x > 0
                 && currentPos.y - lastPos.y == 0
-                && Gdx.input.isKeyPressed(Input.Keys.D)) {
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyRight.toUpperCase()))) {
             this.currentDirection = Directions.RIGHT;
         } else if (currentPos.x - lastPos.x < 0
                 && currentPos.y - lastPos.y == 0
-                && Gdx.input.isKeyPressed(Input.Keys.A)) {
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyLeft.toUpperCase()))) {
             this.currentDirection = Directions.LEFT;
         } else if (currentPos.x - lastPos.x == 0
                 && currentPos.y - lastPos.y > 0
-                && Gdx.input.isKeyPressed(Input.Keys.W)) {
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyUp.toUpperCase()))) {
             this.currentDirection = Directions.UP;
         } else if (currentPos.x - lastPos.x == 0
                 && currentPos.y - lastPos.y < 0
-                && Gdx.input.isKeyPressed(Input.Keys.S)) {
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyDown.toUpperCase()))) {
             this.currentDirection = Directions.DOWN;
         } else if (currentPos.x - lastPos.x > 0
                 && currentPos.y - lastPos.y > 0
-                && Gdx.input.isKeyPressed(Input.Keys.W)
-                && Gdx.input.isKeyPressed(Input.Keys.D)) {
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyUp.toUpperCase()))
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyRight.toUpperCase()))) {
             this.currentDirection = Directions.UP_RIGHT;
         } else if (currentPos.x - lastPos.x < 0
                 && currentPos.y - lastPos.y < 0
-                && Gdx.input.isKeyPressed(Input.Keys.S)
-                && Gdx.input.isKeyPressed(Input.Keys.A)) {
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyDown.toUpperCase()))
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyLeft.toUpperCase()))) {
             this.currentDirection = Directions.DOWN_LEFT;
         } else if (currentPos.x - lastPos.x > 0
                 && currentPos.y - lastPos.y < 0
-                && Gdx.input.isKeyPressed(Input.Keys.S)
-                && Gdx.input.isKeyPressed(Input.Keys.D)) {
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyDown.toUpperCase()))
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyRight.toUpperCase()))) {
             this.currentDirection = Directions.DOWN_RIGHT;
         } else if (currentPos.x - lastPos.x < 0
                 && currentPos.y - lastPos.y > 0
-                && Gdx.input.isKeyPressed(Input.Keys.W)
-                && Gdx.input.isKeyPressed(Input.Keys.A)) {
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyUp.toUpperCase()))
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyLeft.toUpperCase()))) {
             this.currentDirection = Directions.UP_LEFT;
         }
     }
