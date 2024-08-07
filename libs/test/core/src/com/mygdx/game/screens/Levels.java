@@ -45,6 +45,9 @@ public class Levels implements Screen {
     private Texture buttonMenu = new Texture("buttons/buttonMenu.png");
     private Texture buttonMenuDown = new Texture("buttons/buttonMenuDown.png");
 
+    private Texture buttonSettings = new Texture("buttons/buttonSettings.png");
+    private Texture buttonSettingsDown = new Texture("buttons/buttonSettingsDown.png");
+
     private float buttonMenuX, buttonMenuY;
     private float buttonMenuWidth, buttonMenuHeight;
 
@@ -62,6 +65,9 @@ public class Levels implements Screen {
     private float buttonThreeX, buttonThreeY;
     private float buttonFourX, buttonFourY;
     private float buttonFiveX, buttonFiveY;
+
+    private float buttonSettingsX, buttonSettingsY;
+    private float btnSettingsWidth, btnSettingsHeight;
 
     private static final String zeroStars = "stars/zeroStars.png";
     private static final String oneStars = "stars/oneStar.png";
@@ -133,6 +139,9 @@ public class Levels implements Screen {
         this.buttonFiveX = screenWidth / 2 - btnFiveWidth / 2;
         this.buttonFiveY = screenHeight / 2 - btnFiveHeight / 2 - 235;
 
+        this.btnSettingsWidth = 60;
+        this.btnSettingsHeight = 60;
+
         this.starsWidth = (float) this.starsTexture.getWidth() / 25;
         this.starsHeight = (float) this.starsTexture.getHeight() / 25;
 
@@ -149,6 +158,9 @@ public class Levels implements Screen {
 
         this.buttonMenuX = buttonMenuWidth - buttonMenuWidth / 2;
         this.buttonMenuY = buttonMenuHeight - buttonResetHeight / 2;
+
+        this.buttonSettingsX = screenWidth - btnSettingsWidth * 1.5f;
+        this.buttonSettingsY = screenHeight - btnSettingsHeight * 1.5f;
     }
 
     @Override
@@ -169,9 +181,30 @@ public class Levels implements Screen {
         this.runTestLevel();
         this.drawResetButton();
         this.goToMenu();
+        this.drawSettings();
         this.batch.end();
     }
 
+    public void drawSettings() {
+        if (this.isButtonSettings()) {
+            this.batch.draw(buttonSettingsDown, buttonSettingsX, buttonSettingsY, btnSettingsWidth, btnSettingsHeight);
+            if (Gdx.input.isTouched()) {
+                Settings settings = new Settings(this.game);
+                settings.setPreviousScreen(this);
+                this.game.getSoundSettings().playClickSound();
+                this.game.setScreen(settings);
+            }
+        } else {
+            this.batch.draw(buttonSettings, buttonSettingsX, buttonSettingsY, btnSettingsWidth, btnSettingsHeight);
+        }
+    }
+
+    public boolean isButtonSettings() {
+        return Gdx.input.getX() < buttonSettingsX + btnSettingsWidth
+                && Gdx.input.getX() > buttonSettingsX
+                && screenHeight - Gdx.input.getY() < buttonSettingsY + btnSettingsHeight
+                && screenHeight - Gdx.input.getY() > buttonSettingsY;
+    }
 
     public void goToMenu() {
         if (this.isButtonMenu()
@@ -184,6 +217,7 @@ public class Levels implements Screen {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                this.game.getSoundSettings().playClickSound();
                 this.game.setScreen(new MainMenu(this.game));
             }
         }
@@ -249,6 +283,7 @@ public class Levels implements Screen {
         if (this.isButtonOne()) {
             this.batch.draw(buttonOneDown, buttonOneX, buttonOneY);
             if (Gdx.input.isTouched()) {
+                this.game.getSoundSettings().playClickSound();
                 game.setScreen(new GameScreen(game, firstLevelMap));
             }
         } else {
@@ -276,6 +311,7 @@ public class Levels implements Screen {
         if (this.isButtonTwo()) {
             this.batch.draw(buttonTwoDown, buttonTwoX, buttonTwoY);
             if (Gdx.input.isTouched()) {
+                this.game.getSoundSettings().playClickSound();
                 game.setScreen(new GameScreen(game, secondLevelMap));
             }
         } else {
@@ -303,6 +339,7 @@ public class Levels implements Screen {
         if (this.isButtonThree()) {
             this.batch.draw(buttonThreeDown, buttonThreeX, buttonThreeY);
             if (Gdx.input.isTouched()) {
+                this.game.getSoundSettings().playClickSound();
                 game.setScreen(new GameScreen(game, thirdLevelMap));
             }
         } else {
@@ -325,6 +362,7 @@ public class Levels implements Screen {
         if (this.isButtonFour()) {
             this.batch.draw(buttonFourDown, buttonFourX, buttonFourY);
             if (Gdx.input.isTouched()) {
+                this.game.getSoundSettings().playClickSound();
                 game.setScreen(new GameScreen(game, fourthLevelMap));
             }
         } else {
@@ -347,6 +385,7 @@ public class Levels implements Screen {
         if (this.isButtonFive()) {
             this.batch.draw(buttonFiveDown, buttonFiveX, buttonFiveY);
             if (Gdx.input.isTouched()) {
+                this.game.getSoundSettings().playClickSound();
                 game.setScreen(new GameScreen(game, fifthLevelMap));
             }
         } else {

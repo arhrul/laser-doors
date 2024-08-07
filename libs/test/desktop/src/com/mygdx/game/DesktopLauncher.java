@@ -2,7 +2,6 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.mygdx.game.LaserDoorsGame;
 
 // Please note that on macOS your application needs to be started with the -XstartOnFirstThread JVM argument
 public class DesktopLauncher {
@@ -18,7 +17,7 @@ public class DesktopLauncher {
 
 		config.setTitle("Laser Doors");
 		config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
-		config.setWindowIcon("playerStandard.png");
+		config.setWindowIcon("skins/playerStandard_standard.png");
 		new Lwjgl3Application(new LaserDoorsGame(), config);
 	}
 }

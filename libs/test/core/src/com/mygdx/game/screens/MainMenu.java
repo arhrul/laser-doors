@@ -14,6 +14,8 @@ public class MainMenu implements Screen {
     private Texture buttonPlayDown = new Texture("buttons/buttonPlayDown.png");
     private Texture buttonExit = new Texture("buttons/buttonExit.png");
     private Texture buttonExitDown = new Texture("buttons/buttonExitDown.png");
+    private Texture buttonSettings = new Texture("buttons/buttonSettings.png");
+    private Texture buttonSettingsDown = new Texture("buttons/buttonSettingsDown.png");
 
     private Texture laserDoors = new Texture("laserDoors.png");
 
@@ -26,9 +28,11 @@ public class MainMenu implements Screen {
 
     private float buttonPlayX, buttonPlayY;
     private float buttonExitX, buttonExitY;
+    private float buttonSettingsX, buttonSettingsY;
 
     private float btnPlayWidth, btnPlayHeight;
     private float btnExitWidth, btnExitHeight;
+    private float btnSettingsWidth, btnSettingsHeight;
 
     /**
      * Game main menu.
@@ -48,10 +52,13 @@ public class MainMenu implements Screen {
         this.btnExitWidth = buttonExit.getWidth();
         this.btnExitHeight = buttonExit.getHeight();
 
+        this.btnSettingsWidth = 60;
+        this.btnSettingsHeight = 60;
+
         this.laserDoorsWidth = 960;
         this.laserDoorsHeight = 540;
 
-        this.laserDoorsX = screenWidth / 2- laserDoorsWidth / 2;
+        this.laserDoorsX = screenWidth / 2 - laserDoorsWidth / 2;
         this.laserDoorsY = screenHeight / 2 - laserDoorsHeight / 2 + 350;
 
         this.buttonPlayX = screenWidth / 2 - btnPlayWidth / 2;
@@ -59,6 +66,9 @@ public class MainMenu implements Screen {
 
         this.buttonExitX = screenWidth / 2 - btnExitWidth / 2;
         this.buttonExitY = screenHeight / 2 - btnExitHeight / 2 - 50;
+
+        this.buttonSettingsX = screenWidth / 2 - btnSettingsWidth / 2;
+        this.buttonSettingsY = screenHeight / 2 - btnSettingsHeight / 2 - 150;
     }
 
     @Override
@@ -74,6 +84,7 @@ public class MainMenu implements Screen {
         this.batch.draw(laserDoors, laserDoorsX, laserDoorsY, laserDoorsWidth, laserDoorsHeight);
         this.startGame();
         this.exitGame();
+        this.drawSettings();
         this.batch.end();
     }
 
@@ -89,11 +100,33 @@ public class MainMenu implements Screen {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                this.game.getSoundSettings().playClickSound();
                 game.setScreen(new Levels(game));
             }
         } else {
             this.batch.draw(buttonPlay, buttonPlayX, buttonPlayY, btnPlayWidth, btnPlayHeight);
         }
+    }
+
+    public void drawSettings() {
+        if (this.isButtonSettings()) {
+            this.batch.draw(buttonSettingsDown, buttonSettingsX, buttonSettingsY, btnSettingsWidth, btnSettingsHeight);
+            if (Gdx.input.isTouched()) {
+                Settings settings = new Settings(this.game);
+                settings.setPreviousScreen(this);
+                this.game.getSoundSettings().playClickSound();
+                this.game.setScreen(settings);
+            }
+        } else {
+            this.batch.draw(buttonSettings, buttonSettingsX, buttonSettingsY, btnSettingsWidth, btnSettingsHeight);
+        }
+    }
+
+    public boolean isButtonSettings() {
+        return Gdx.input.getX() < buttonSettingsX + btnSettingsWidth
+                && Gdx.input.getX() > buttonSettingsX
+                && screenHeight - Gdx.input.getY() < buttonSettingsY + btnSettingsHeight
+                && screenHeight - Gdx.input.getY() > buttonSettingsY;
     }
 
     /**
@@ -103,6 +136,7 @@ public class MainMenu implements Screen {
         if (this.isButtonExit()) {
             this.batch.draw(buttonExitDown, buttonExitX, buttonExitY, btnExitWidth, btnExitHeight);
             if (Gdx.input.isTouched()) {
+                this.game.getSoundSettings().playClickSound();
                 System.exit(0);
             }
         } else {
