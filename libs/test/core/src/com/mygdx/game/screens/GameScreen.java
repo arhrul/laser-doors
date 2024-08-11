@@ -28,24 +28,24 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GameScreen implements Screen {
-    private LaserDoorsGame game;
+    private final LaserDoorsGame game;
 
-    private float screenWidth, screenHeight;
+    private final float screenWidth;
+    private final float screenHeight;
 
-    private SpriteBatch batch;
-    private BitmapFont font;
+    private final SpriteBatch batch;
+    private final BitmapFont font;
 
-    private FreeTypeFontGenerator generator;
-    private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+    private final FreeTypeFontGenerator generator;
+    private final FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 
-    private String mapPath;
+    private final String mapPath;
 
     private Player player;
 
-//    private Texture playerCurrentTexture;
-    private Texture hudTexture = new Texture("hud.png");
-    private float hudWidth, hudHeight;
-    private float hudX, hudY;
+    private final Texture hudTexture = new Texture("hud.png");
+    private final float hudWidth, hudHeight;
+    private final float hudX, hudY;
 
     private String timerText;
     private float timerTextWidth;
@@ -55,23 +55,23 @@ public class GameScreen implements Screen {
 
     private float playerX, playerY;
 
-    private OrthographicCamera camera;
+    private final OrthographicCamera camera;
     private TiledMap map;
     private OrthogonalTiledMapRenderer mapRenderer;
 
-    private Array<Rectangle> collisionRectangles = new Array<>();
+    private final Array<Rectangle> collisionRectangles = new Array<>();
 
-    private Array<Rectangle> redDoorsRectangles = new Array<>();
-    private Array<Rectangle> greenDoorsRectangles = new Array<>();
+    private final Array<Rectangle> redDoorsRectangles = new Array<>();
+    private final Array<Rectangle> greenDoorsRectangles = new Array<>();
 
-    private Array<Rectangle> redFinishRectangles = new Array<>();
-    private Array<Rectangle> greenFinishRectangles = new Array<>();
-    private Array<Rectangle> standardFinishRectangles = new Array<>();
+    private final Array<Rectangle> redFinishRectangles = new Array<>();
+    private final Array<Rectangle> greenFinishRectangles = new Array<>();
+    private final Array<Rectangle> standardFinishRectangles = new Array<>();
 
-    private Array<Rectangle> horizontalDoorsRectangles = new Array<>();
-    private Array<Rectangle> verticalDoorsRectangles = new Array<>();
+    private final Array<Rectangle> horizontalDoorsRectangles = new Array<>();
+    private final Array<Rectangle> verticalDoorsRectangles = new Array<>();
 
-    private static List<String> levels = new ArrayList<>(Arrays.asList(
+    private static final List<String> levels = new ArrayList<>(Arrays.asList(
             "tiled/map1.tmx",
             "tiled/map2.tmx",
             "tiled/map3.tmx",
@@ -79,13 +79,11 @@ public class GameScreen implements Screen {
             "tiled/map5.tmx"
     ));
 
-    private static int currentLevel = 0;
+    private float timePassed = 0f;
 
-    float timePassed = 0f;
+    private final Texture backgroundTexture = new Texture("background.jpg");
 
-    private Texture backgroundTexture = new Texture("background.jpg");
-
-    private GlyphLayout layout = new GlyphLayout();
+    private final GlyphLayout layout = new GlyphLayout();
 
     /**
      * Game screen constructor.
@@ -114,8 +112,6 @@ public class GameScreen implements Screen {
         this.hudHeight = this.hudTexture.getHeight();
         this.hudX = this.screenWidth / 2 - hudWidth / 2;
         this.hudY = this.screenHeight - hudHeight;
-
-//        this.playerCurrentTexture = new Texture(this.game.getSkinSettings().getStandardCurrentSkinPath());
     }
 
     /**
@@ -138,15 +134,6 @@ public class GameScreen implements Screen {
         }
         return 4;
     }
-
-    /**
-     * Change player texture.
-     *
-     * @param playerCurrentTexture new player texture
-     */
-//    public void setPlayerCurrentTexture(Texture playerCurrentTexture) {
-//        this.playerCurrentTexture = playerCurrentTexture;
-//    }
 
     /**
      * Get all levels.
@@ -190,17 +177,19 @@ public class GameScreen implements Screen {
         float offsetX = screenCenterX - mapCenterX;
         float offsetY = screenCenterY - mapCenterY;
 
-        camera.position.set(mapCenterX, mapCenterY, 0);
-        camera.update();
+        this.camera.position.set(mapCenterX, mapCenterY, 0);
+        this.camera.update();
 
         this.playerSpawn = new Vector2(
-                ((RectangleMapObject) map.getLayers().get("spawn").getObjects().get(0)).getRectangle().x + offsetX,
-                ((RectangleMapObject) map.getLayers().get("spawn").getObjects().get(0)).getRectangle().y + offsetY
+                ((RectangleMapObject) this.map.getLayers().get("spawn")
+                        .getObjects().get(0)).getRectangle().x + offsetX,
+                ((RectangleMapObject) this.map.getLayers().get("spawn")
+                        .getObjects().get(0)).getRectangle().y + offsetY
         );
 
-        if (playerX == 0 || playerY == 0) {
-            playerX = playerSpawn.x;
-            playerY = playerSpawn.y;
+        if (this.playerX == 0 || playerY == 0) {
+            this.playerX = this.playerSpawn.x;
+            this.playerY = this.playerSpawn.y;
         }
 
         this.player = new Player(this, playerX, playerY, 200f);
@@ -211,18 +200,21 @@ public class GameScreen implements Screen {
     /**
      * Load objects from the map.
      *
-     * @param offsetX
-     * @param offsetY
+     * @param offsetX offsetX
+     * @param offsetY offsetY
      */
     private void loadMapObjects(float offsetX, float offsetY) {
-        loadObjectsWithOffset(map.getLayers().get("collisions"), collisionRectangles, offsetX, offsetY);
-        loadObjectsWithOffset(map.getLayers().get("red-doors"), redDoorsRectangles, offsetX, offsetY);
-        loadObjectsWithOffset(map.getLayers().get("green-doors"), greenDoorsRectangles, offsetX, offsetY);
-        loadObjectsWithOffset(map.getLayers().get("red-finish"), redFinishRectangles, offsetX, offsetY);
-        loadObjectsWithOffset(map.getLayers().get("green-finish"), greenFinishRectangles, offsetX, offsetY);
-        loadObjectsWithOffset(map.getLayers().get("standard-finish"), standardFinishRectangles, offsetX, offsetY);
-        loadObjectsWithOffset(map.getLayers().get("horizontal-doors"), horizontalDoorsRectangles, offsetX, offsetY);
-        loadObjectsWithOffset(map.getLayers().get("vertical-doors"), verticalDoorsRectangles, offsetX, offsetY);
+        loadObjectsWithOffset(this.map.getLayers().get("collisions"), this.collisionRectangles, offsetX, offsetY);
+        loadObjectsWithOffset(this.map.getLayers().get("red-doors"), this.redDoorsRectangles, offsetX, offsetY);
+        loadObjectsWithOffset(this.map.getLayers().get("green-doors"), this.greenDoorsRectangles, offsetX, offsetY);
+        loadObjectsWithOffset(this.map.getLayers().get("red-finish"), this.redFinishRectangles, offsetX, offsetY);
+        loadObjectsWithOffset(this.map.getLayers().get("green-finish"), this.greenFinishRectangles, offsetX, offsetY);
+        loadObjectsWithOffset(this.map.getLayers().get("standard-finish"),
+                this.standardFinishRectangles, offsetX, offsetY);
+        loadObjectsWithOffset(this.map.getLayers().get("horizontal-doors"),
+                this.horizontalDoorsRectangles, offsetX, offsetY);
+        loadObjectsWithOffset(this.map.getLayers().get("vertical-doors"),
+                this.verticalDoorsRectangles, offsetX, offsetY);
     }
 
     /**
@@ -251,40 +243,38 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        timePassed += Gdx.graphics.getDeltaTime();
+        this.timePassed += Gdx.graphics.getDeltaTime();
 
-        this.timerText = "Time: " + Math.round(timePassed * 10.0) / 10.0;
-        layout.setText(font, timerText);
-        timerTextWidth = layout.width;
-        timerTextHeight = layout.height;
+        this.timerText = "Time: " + Math.round(this.timePassed * 10.0) / 10.0;
+        this.layout.setText(this.font, this.timerText);
+        this.timerTextWidth = this.layout.width;
+        this.timerTextHeight = this.layout.height;
 
-        batch.begin();
-        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.end();
+        this.batch.begin();
+        this.batch.draw(this.backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.batch.end();
 
-        camera.update();
-        mapRenderer.setView(camera);
-        mapRenderer.render();
+        this.camera.update();
+        this.mapRenderer.setView(this.camera);
+        this.mapRenderer.render();
 
-        batch.begin();
-        player.update(delta);
-        player.render(batch);
-        batch.draw(new Texture("HUD.png"), hudX, hudY);
-        font.draw(batch, timerText, screenWidth / 2 - timerTextWidth / 2, screenHeight - 20);
-        batch.end();
-
-//        this.setPlayerCurrentTexture(player.getCurrentTexture());
+        this.batch.begin();
+        this.player.update(delta);
+        this.player.render(this.batch);
+        this.batch.draw(new Texture("HUD.png"), this.hudX, this.hudY);
+        this.font.draw(this.batch, this.timerText, this.screenWidth / 2 - this.timerTextWidth / 2, this.screenHeight - 20);
+        this.batch.end();
 
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            game.setScreen(new Pause(game, this));
+            this.game.setScreen(new Pause(this.game, this));
         }
     }
 
     @Override
     public void resize(int width, int height) {
-        camera.viewportWidth = width;
-        camera.viewportHeight = height;
-        camera.update();
+        this.camera.viewportWidth = width;
+        this.camera.viewportHeight = height;
+        this.camera.update();
     }
 
     @Override
@@ -301,12 +291,11 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        batch.dispose();
-        font.dispose();
-//        playerCurrentTexture.dispose();
-        backgroundTexture.dispose();
-        map.dispose();
-        player.dispose();
+        this.batch.dispose();
+        this.font.dispose();
+        this.backgroundTexture.dispose();
+        this.map.dispose();
+        this.player.dispose();
     }
 
     /**
@@ -315,7 +304,7 @@ public class GameScreen implements Screen {
      * @return collision rectangles
      */
     public Array<Rectangle> getCollisionRectangles() {
-        return collisionRectangles;
+        return this.collisionRectangles;
     }
 
     /**
@@ -324,7 +313,7 @@ public class GameScreen implements Screen {
      * @return green doors rectangles
      */
     public Array<Rectangle> getGreenDoorsRectangles() {
-        return greenDoorsRectangles;
+        return this.greenDoorsRectangles;
     }
 
     /**
@@ -333,7 +322,7 @@ public class GameScreen implements Screen {
      * @return red doors rectangles
      */
     public Array<Rectangle> getRedDoorsRectangles() {
-        return redDoorsRectangles;
+        return this.redDoorsRectangles;
     }
 
     /**
@@ -342,7 +331,7 @@ public class GameScreen implements Screen {
      * @return green finish rectangles
      */
     public Array<Rectangle> getGreenFinishRectangles() {
-        return greenFinishRectangles;
+        return this.greenFinishRectangles;
     }
 
     /**
@@ -351,7 +340,7 @@ public class GameScreen implements Screen {
      * @return red finish rectangles
      */
     public Array<Rectangle> getRedFinishRectangles() {
-        return redFinishRectangles;
+        return this.redFinishRectangles;
     }
 
     /**
@@ -360,7 +349,7 @@ public class GameScreen implements Screen {
      * @return standard finish rectangles
      */
     public Array<Rectangle> getStandardFinishRectangles() {
-        return standardFinishRectangles;
+        return this.standardFinishRectangles;
     }
 
     /**
@@ -369,7 +358,7 @@ public class GameScreen implements Screen {
      * @return horizontal doors rectangles
      */
     public Array<Rectangle> getHorizontalDoorsRectangles() {
-        return horizontalDoorsRectangles;
+        return this.horizontalDoorsRectangles;
     }
 
     /**
@@ -378,7 +367,7 @@ public class GameScreen implements Screen {
      * @return vertical doors rectangles
      */
     public Array<Rectangle> getVerticalDoorsRectangles() {
-        return verticalDoorsRectangles;
+        return this.verticalDoorsRectangles;
     }
 
     /**
@@ -387,7 +376,7 @@ public class GameScreen implements Screen {
      * @return map path
      */
     public String getMapPath() {
-        return mapPath;
+        return this.mapPath;
     }
 
     /**
@@ -396,7 +385,7 @@ public class GameScreen implements Screen {
      * @return time passed
      */
     public float getTimePassed() {
-        return timePassed;
+        return this.timePassed;
     }
 
     /**
@@ -405,6 +394,6 @@ public class GameScreen implements Screen {
      * @return game
      */
     public LaserDoorsGame getGame() {
-        return game;
+        return this.game;
     }
 }

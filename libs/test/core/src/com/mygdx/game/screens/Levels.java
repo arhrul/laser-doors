@@ -21,53 +21,53 @@ import java.util.stream.Collectors;
 public class Levels implements Screen {
 
     private static final int STARS_MARGIN = 25;
-    private LaserDoorsGame game;
+    private final LaserDoorsGame game;
 
-    private SpriteBatch batch;
+    private final SpriteBatch batch;
 
-    private float screenWidth, screenHeight;
+    private final float screenWidth, screenHeight;
 
-    private Texture buttonOne = new Texture(Gdx.files.internal("buttons/buttonOne.png"));
-    private Texture buttonTwo = new Texture(Gdx.files.internal("buttons/buttonTwo.png"));
-    private Texture buttonThree = new Texture(Gdx.files.internal("buttons/buttonThree.png"));
-    private Texture buttonFour = new Texture(Gdx.files.internal("buttons/buttonFour.png"));
-    private Texture buttonFive = new Texture(Gdx.files.internal("buttons/buttonFive.png"));
+    private final Texture buttonOne = new Texture(Gdx.files.internal("buttons/buttonOne.png"));
+    private final Texture buttonTwo = new Texture(Gdx.files.internal("buttons/buttonTwo.png"));
+    private final Texture buttonThree = new Texture(Gdx.files.internal("buttons/buttonThree.png"));
+    private final Texture buttonFour = new Texture(Gdx.files.internal("buttons/buttonFour.png"));
+    private final Texture buttonFive = new Texture(Gdx.files.internal("buttons/buttonFive.png"));
 
-    private Texture buttonOneDown = new Texture("buttons/buttonOneDown.png");
-    private Texture buttonTwoDown = new Texture("buttons/buttonTwoDown.png");
-    private Texture buttonThreeDown = new Texture("buttons/buttonThreeDown.png");
-    private Texture buttonFourDown = new Texture("buttons/buttonFourDown.png");
-    private Texture buttonFiveDown = new Texture("buttons/buttonFiveDown.png");
+    private final Texture buttonOneDown = new Texture("buttons/buttonOneDown.png");
+    private final Texture buttonTwoDown = new Texture("buttons/buttonTwoDown.png");
+    private final Texture buttonThreeDown = new Texture("buttons/buttonThreeDown.png");
+    private final Texture buttonFourDown = new Texture("buttons/buttonFourDown.png");
+    private final Texture buttonFiveDown = new Texture("buttons/buttonFiveDown.png");
 
-    private Texture buttonReset = new Texture("buttons/buttonReset.png");
-    private Texture buttonResetDown = new Texture("buttons/buttonResetDown.png");
+    private final Texture buttonReset = new Texture("buttons/buttonReset.png");
+    private final Texture buttonResetDown = new Texture("buttons/buttonResetDown.png");
 
-    private Texture buttonMenu = new Texture("buttons/buttonMenu.png");
-    private Texture buttonMenuDown = new Texture("buttons/buttonMenuDown.png");
+    private final Texture buttonMenu = new Texture("buttons/buttonMenu.png");
+    private final Texture buttonMenuDown = new Texture("buttons/buttonMenuDown.png");
 
-    private Texture buttonSettings = new Texture("buttons/buttonSettings.png");
-    private Texture buttonSettingsDown = new Texture("buttons/buttonSettingsDown.png");
+    private final Texture buttonSettings = new Texture("buttons/buttonSettings.png");
+    private final Texture buttonSettingsDown = new Texture("buttons/buttonSettingsDown.png");
 
-    private float buttonMenuX, buttonMenuY;
-    private float buttonMenuWidth, buttonMenuHeight;
+    private final float buttonMenuX, buttonMenuY;
+    private final float buttonMenuWidth, buttonMenuHeight;
 
-    private float buttonResetWidth, buttonResetHeight;
-    private float buttonResetX, buttonResetY;
+    private final float buttonResetWidth, buttonResetHeight;
+    private final float buttonResetX, buttonResetY;
 
-    private float btnOneWidth, btnOneHeight;
-    private float btnTwoWidth, btnTwoHeight;
-    private float btnThreeWidth, btnThreeHeight;
-    private float btnFourWidth, btnFourHeight;
-    private float btnFiveWidth, btnFiveHeight;
+    private final float btnOneWidth, btnOneHeight;
+    private final float btnTwoWidth, btnTwoHeight;
+    private final float btnThreeWidth, btnThreeHeight;
+    private final float btnFourWidth, btnFourHeight;
+    private final float btnFiveWidth, btnFiveHeight;
 
-    private float buttonOneX, buttonOneY;
-    private float buttonTwoX, buttonTwoY;
-    private float buttonThreeX, buttonThreeY;
-    private float buttonFourX, buttonFourY;
-    private float buttonFiveX, buttonFiveY;
+    private final float buttonOneX, buttonOneY;
+    private final float buttonTwoX, buttonTwoY;
+    private final float buttonThreeX, buttonThreeY;
+    private final float buttonFourX, buttonFourY;
+    private final float buttonFiveX, buttonFiveY;
 
-    private float buttonSettingsX, buttonSettingsY;
-    private float btnSettingsWidth, btnSettingsHeight;
+    private final float buttonSettingsX, buttonSettingsY;
+    private final float btnSettingsWidth, btnSettingsHeight;
 
     private static final String zeroStars = "stars/zeroStars.png";
     private static final String oneStars = "stars/oneStar.png";
@@ -75,9 +75,9 @@ public class Levels implements Screen {
     private static final String threeStars = "stars/threeStars.png";
 
 
-    private Texture starsTexture = new Texture("stars/zeroStars.png");
-    private float starsX, starsY;
-    private float starsWidth, starsHeight;
+    private final Texture starsTexture = new Texture("stars/zeroStars.png");
+    private final float starsX, starsY;
+    private final float starsWidth, starsHeight;
 
     private static final String firstLevelFilename = "times/first-level-times.txt";
     private static final String secondLevelFilename = "times/second-level-times.txt";
@@ -85,7 +85,7 @@ public class Levels implements Screen {
     private static final String fourthLevelFilename = "times/fourth-level-times.txt";
     private static final String fifthLevelFilename = "times/fifth-level-times.txt";
 
-    private List<String> levels = new ArrayList<>(Arrays.asList(
+    private final List<String> levels = new ArrayList<>(Arrays.asList(
             firstLevelFilename,
             secondLevelFilename,
             thirdLevelFilename,
@@ -99,12 +99,10 @@ public class Levels implements Screen {
     private static final String fourthLevelMap = "tiled/map4.tmx";
     private static final String fifthLevelMap = "tiled/map5.tmx";
 
-
-
     /**
      * Levels screen.
      *
-     * @param game
+     * @param game game
      */
     public Levels(LaserDoorsGame game) {
         this.game = game;
@@ -185,6 +183,9 @@ public class Levels implements Screen {
         this.batch.end();
     }
 
+    /**
+     * Draw settings button.
+     */
     public void drawSettings() {
         if (this.isButtonSettings()) {
             this.batch.draw(buttonSettingsDown, buttonSettingsX, buttonSettingsY, btnSettingsWidth, btnSettingsHeight);
@@ -199,6 +200,11 @@ public class Levels implements Screen {
         }
     }
 
+    /**
+     * Check if settings button is hovered.
+     *
+     * @return boolean
+     */
     public boolean isButtonSettings() {
         return Gdx.input.getX() < buttonSettingsX + btnSettingsWidth
                 && Gdx.input.getX() > buttonSettingsX
@@ -206,10 +212,11 @@ public class Levels implements Screen {
                 && screenHeight - Gdx.input.getY() > buttonSettingsY;
     }
 
+    /**
+     * Draw menu button.
+     */
     public void goToMenu() {
-        if (this.isButtonMenu()
-                && screenHeight - Gdx.input.getY() < buttonMenuY + buttonMenuHeight
-                && screenHeight - Gdx.input.getY() > buttonMenuY) {
+        if (this.isButtonMenu()) {
             this.batch.draw(buttonMenuDown, buttonMenuX, buttonMenuY);
             if (Gdx.input.isTouched()) {
                 try {
@@ -220,16 +227,30 @@ public class Levels implements Screen {
                 this.game.getSoundSettings().playClickSound();
                 this.game.setScreen(new MainMenu(this.game));
             }
-        }
-        else {
+        } else {
             this.batch.draw(buttonMenu, buttonMenuX, buttonMenuY);
         }
     }
 
+    /**
+     * Check if button menu is hovered.
+     *
+     * @return boolean
+     */
     public boolean isButtonMenu() {
-        return Gdx.input.getX() < buttonMenuX + buttonMenuWidth && Gdx.input.getX() > buttonMenuX;
+        return Gdx.input.getX() < buttonMenuX + buttonMenuWidth
+                && Gdx.input.getX() > buttonMenuX
+                && screenHeight - Gdx.input.getY() < buttonMenuY + buttonMenuHeight
+                && screenHeight - Gdx.input.getY() > buttonMenuY;
     }
 
+    /**
+     * Draw stars near to the levels.
+     *
+     * @param filename path to texture
+     * @param x        x-pos
+     * @param y        y-pos
+     */
     public void drawStars(String filename, float x, float y) {
         List<Float> levelTimes;
         String starsPath;
@@ -245,8 +266,7 @@ public class Levels implements Screen {
 
         if (levelTimes.isEmpty()) {
             starsPath = zeroStars;
-        }
-        else if (bestTime <= bestTimeForLevel) {
+        } else if (bestTime <= bestTimeForLevel) {
             starsPath = threeStars;
         } else if (bestTime > bestTimeForLevel && bestTime <= (bestTimeForLevel + 5)) {
             starsPath = twoStars;
@@ -261,6 +281,12 @@ public class Levels implements Screen {
         this.batch.draw(starsTexture, x, y, starsWidth, starsHeight);
     }
 
+    /**
+     * Get best time for the level.
+     *
+     * @param filename level
+     * @return time
+     */
     public int findBestTimeForLevel(String filename) {
         if (filename.equals(firstLevelFilename)) {
             return 17;
@@ -320,9 +346,9 @@ public class Levels implements Screen {
     }
 
     /**
-     * Check mouse X coordinate on second level button.
+     * Check if second level button is hovered.
      *
-     * @return true or false
+     * @return boolean
      */
     public boolean isButtonTwo() {
         return Gdx.input.getX() < buttonTwoX + btnTwoWidth
@@ -347,6 +373,11 @@ public class Levels implements Screen {
         }
     }
 
+    /**
+     * Check if third level button is hovered.
+     *
+     * @return boolean
+     */
     public boolean isButtonThree() {
         return Gdx.input.getX() < buttonThreeX + btnThreeWidth
                 && Gdx.input.getX() > buttonThreeX
@@ -370,6 +401,11 @@ public class Levels implements Screen {
         }
     }
 
+    /**
+     * Check if fourth level button is hovered.
+     *
+     * @return boolean
+     */
     public boolean isButtonFour() {
         return Gdx.input.getX() < buttonFourX + btnFourWidth
                 && Gdx.input.getX() > buttonFourX
@@ -393,6 +429,11 @@ public class Levels implements Screen {
         }
     }
 
+    /**
+     * Check if fifth level button is hovered.
+     *
+     * @return boolean
+     */
     public boolean isButtonFive() {
         return Gdx.input.getX() < buttonFiveX + btnFiveWidth
                 && Gdx.input.getX() > buttonFiveX
@@ -400,6 +441,9 @@ public class Levels implements Screen {
                 && screenHeight - Gdx.input.getY() > buttonFiveY;
     }
 
+    /**
+     * Special combination for running test level.
+     */
     public void runTestLevel() {
         if (Gdx.input.isKeyPressed(Input.Keys.L) &&
                 Gdx.input.isKeyPressed(Input.Keys.A) &&
@@ -407,9 +451,13 @@ public class Levels implements Screen {
                 Gdx.input.isKeyPressed(Input.Keys.E) &&
                 Gdx.input.isKeyPressed(Input.Keys.R)) {
             game.setScreen(new GameScreen(game, "tiled/mapTest.tmx"));
-        };
+        }
+        ;
     }
 
+    /**
+     * Draw reset button.
+     */
     public void drawResetButton() {
         if (this.isResetButton()) {
             this.batch.draw(buttonResetDown, buttonResetX, buttonResetY);
@@ -421,6 +469,11 @@ public class Levels implements Screen {
         }
     }
 
+    /**
+     * Check if reset button is hovered.
+     *
+     * @return boolean
+     */
     public boolean isResetButton() {
         return Gdx.input.getX() < buttonResetX + buttonResetWidth
                 && Gdx.input.getX() > buttonResetX
@@ -428,6 +481,9 @@ public class Levels implements Screen {
                 && screenHeight - Gdx.input.getY() > buttonResetY;
     }
 
+    /**
+     * Reset level times.
+     */
     public void resetLevels() {
         for (String path : levels) {
             try (FileWriter writer = new FileWriter(path)) {

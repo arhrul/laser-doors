@@ -8,31 +8,31 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.LaserDoorsGame;
 
 public class MainMenu implements Screen {
-    private LaserDoorsGame game;
+    private final LaserDoorsGame game;
 
-    private Texture buttonPlay = new Texture("buttons/buttonPlay.png");
-    private Texture buttonPlayDown = new Texture("buttons/buttonPlayDown.png");
-    private Texture buttonExit = new Texture("buttons/buttonExit.png");
-    private Texture buttonExitDown = new Texture("buttons/buttonExitDown.png");
-    private Texture buttonSettings = new Texture("buttons/buttonSettings.png");
-    private Texture buttonSettingsDown = new Texture("buttons/buttonSettingsDown.png");
+    private final Texture buttonPlay = new Texture("buttons/buttonPlay.png");
+    private final Texture buttonPlayDown = new Texture("buttons/buttonPlayDown.png");
+    private final Texture buttonExit = new Texture("buttons/buttonExit.png");
+    private final Texture buttonExitDown = new Texture("buttons/buttonExitDown.png");
+    private final Texture buttonSettings = new Texture("buttons/buttonSettings.png");
+    private final Texture buttonSettingsDown = new Texture("buttons/buttonSettingsDown.png");
 
-    private Texture laserDoors = new Texture("laserDoors.png");
+    private final Texture laserDoors = new Texture("laserDoors.png");
 
-    private float laserDoorsX, laserDoorsY;
-    private float laserDoorsWidth, laserDoorsHeight;
+    private final float laserDoorsX, laserDoorsY;
+    private final float laserDoorsWidth, laserDoorsHeight;
 
-    private float screenWidth, screenHeight;
+    private final float screenWidth, screenHeight;
 
-    private SpriteBatch batch;
+    private final SpriteBatch batch;
 
-    private float buttonPlayX, buttonPlayY;
-    private float buttonExitX, buttonExitY;
-    private float buttonSettingsX, buttonSettingsY;
+    private final float buttonPlayX, buttonPlayY;
+    private final float buttonExitX, buttonExitY;
+    private final float buttonSettingsX, buttonSettingsY;
 
-    private float btnPlayWidth, btnPlayHeight;
-    private float btnExitWidth, btnExitHeight;
-    private float btnSettingsWidth, btnSettingsHeight;
+    private final float btnPlayWidth, btnPlayHeight;
+    private final float btnExitWidth, btnExitHeight;
+    private final float btnSettingsWidth, btnSettingsHeight;
 
     /**
      * Game main menu.
@@ -89,7 +89,7 @@ public class MainMenu implements Screen {
     }
 
     /**
-     * Start button.
+     * Draw start button.
      */
     public void startGame() {
         if (this.isButtonPlay()) {
@@ -108,6 +108,9 @@ public class MainMenu implements Screen {
         }
     }
 
+    /**
+     * Draw settings button.
+     */
     public void drawSettings() {
         if (this.isButtonSettings()) {
             this.batch.draw(buttonSettingsDown, buttonSettingsX, buttonSettingsY, btnSettingsWidth, btnSettingsHeight);
@@ -122,6 +125,11 @@ public class MainMenu implements Screen {
         }
     }
 
+    /**
+     * Check if settings button is hovered.
+     *
+     * @return boolean
+     */
     public boolean isButtonSettings() {
         return Gdx.input.getX() < buttonSettingsX + btnSettingsWidth
                 && Gdx.input.getX() > buttonSettingsX
@@ -130,7 +138,7 @@ public class MainMenu implements Screen {
     }
 
     /**
-     * Exit button.
+     * Draw exit button.
      */
     public void exitGame() {
         if (this.isButtonExit()) {
@@ -145,9 +153,9 @@ public class MainMenu implements Screen {
     }
 
     /**
-     * Check mouse X coordinate on exit button.
+     * Check if exit button is hovered.
      *
-     * @return true or false
+     * @return boolean
      */
     public boolean isButtonExit() {
         return Gdx.input.getX() < buttonExitX + btnExitWidth
@@ -157,9 +165,9 @@ public class MainMenu implements Screen {
     }
 
     /**
-     * Check mouse X coordinate on play button.
+     * Check if play button is hovered.
      *
-     * @return true or false
+     * @return boolean
      */
     public boolean isButtonPlay() {
         return Gdx.input.getX() < buttonPlayX + btnPlayWidth
