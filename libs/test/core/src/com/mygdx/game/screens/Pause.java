@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.LaserDoorsGame;
-import com.mygdx.game.enums.Setting;
 
 public class Pause implements Screen {
     private LaserDoorsGame game;

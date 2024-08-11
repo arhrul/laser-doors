@@ -1,6 +1,5 @@
 package com.mygdx.game.player;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
@@ -24,20 +23,20 @@ public class Player {
     private Texture textureGreen;
 
     private Texture currentTexture;
-    private String currentColor;
 
-    private GameScreen gameScreen;
+    private final GameScreen gameScreen;
 
-    private float playerWidth, playerHeight;
+    private final float playerWidth;
+    private final float playerHeight;
 
-    private Vector2 position;
-    private Vector2 velocity;
+    private final Vector2 position;
+    private final Vector2 velocity;
 
-    private float speed;
-    private Rectangle bounds;
+    private final float speed;
+    private final Rectangle bounds;
 
-    private float acceleration = 500f;
-    private float deceleration = 500f;
+    private static final float acceleration = 500f;
+    private static final float deceleration = 500f;
 
     private boolean onRedDoor = false;
     private boolean onGreenDoor = false;
@@ -69,17 +68,20 @@ public class Player {
     public Player(GameScreen gameScreen, float x, float y, float speed) {
         this.playerWidth = 32;
         this.playerHeight = 32;
+
         this.position = new Vector2(x, y);
         this.lastPosition = new Vector2(x, y);
+
         this.velocity = new Vector2(0, 0);
         this.speed = speed;
         this.bounds = new Rectangle(x, y, playerWidth, playerHeight);
+
         this.gameScreen = gameScreen;
 
         this.textureStandard = this.gameScreen.getGame().getSkinSettings().getStandardCurrentSkin();
         this.textureRed = this.gameScreen.getGame().getSkinSettings().getRedCurrentSkin();
         this.textureGreen = this.gameScreen.getGame().getSkinSettings().getGreenCurrentSkin();
-        this.currentTexture = textureStandard;
+        this.currentTexture = this.textureStandard;
     }
 
     /**
@@ -88,58 +90,58 @@ public class Player {
      * @param delta delta time
      */
     public void update(float delta) {
-        updateKeys();
-        lastPosition = new Vector2(position.x, position.y);
-        if (Gdx.input.isKeyPressed(Input.Keys.valueOf(keyLeft.toUpperCase())) && !prohibitMovingLeft) {
-            velocity.x -= acceleration * delta;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.valueOf(keyRight.toUpperCase())) && !prohibitMovingRight) {
-            velocity.x += acceleration * delta;
+        this.updateKeys();
+        this.lastPosition = new Vector2(this.position.x, this.position.y);
+        if (Gdx.input.isKeyPressed(Input.Keys.valueOf(keyLeft.toUpperCase())) && !this.prohibitMovingLeft) {
+            this.velocity.x -= acceleration * delta;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.valueOf(keyRight.toUpperCase())) && !this.prohibitMovingRight) {
+            this.velocity.x += acceleration * delta;
         } else {
-            if (velocity.x > 0) {
-                velocity.x -= deceleration * delta;
-                if (velocity.x < 0) velocity.x = 0;
-            } else if (velocity.x < 0) {
-                velocity.x += deceleration * delta;
-                if (velocity.x > 0) velocity.x = 0;
+            if (this.velocity.x > 0) {
+                this.velocity.x -= deceleration * delta;
+                if (this.velocity.x < 0) this.velocity.x = 0;
+            } else if (this.velocity.x < 0) {
+                this.velocity.x += deceleration * delta;
+                if (this.velocity.x > 0) this.velocity.x = 0;
             }
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.valueOf(keyUp.toUpperCase())) && !prohibitMovingUp) {
-            velocity.y += acceleration * delta;
-        } else if (Gdx.input.isKeyPressed(Input.Keys.valueOf(keyDown.toUpperCase())) && !prohibitMovingDown) {
-            velocity.y -= acceleration * delta;
+        if (Gdx.input.isKeyPressed(Input.Keys.valueOf(this.keyUp.toUpperCase())) && !this.prohibitMovingUp) {
+            this.velocity.y += acceleration * delta;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.valueOf(this.keyDown.toUpperCase())) && !this.prohibitMovingDown) {
+            this.velocity.y -= acceleration * delta;
         } else {
-            if (velocity.y > 0) {
-                velocity.y -= deceleration * delta;
-                if (velocity.y < 0) velocity.y = 0;
-            } else if (velocity.y < 0) {
-                velocity.y += deceleration * delta;
-                if (velocity.y > 0) velocity.y = 0;
+            if (this.velocity.y > 0) {
+                this.velocity.y -= deceleration * delta;
+                if (this.velocity.y < 0) velocity.y = 0;
+            } else if (this.velocity.y < 0) {
+                this.velocity.y += deceleration * delta;
+                if (this.velocity.y > 0) velocity.y = 0;
             }
         }
 
-        if (velocity.len() > speed) {
-            velocity.nor().scl(speed);
+        if (this.velocity.len() > speed) {
+            this.velocity.nor().scl(speed);
         }
 
-        float newX = position.x + velocity.x * delta;
-        float newY = position.y + velocity.y * delta;
+        float newX = this.position.x + this.velocity.x * delta;
+        float newY = this.position.y + this.velocity.y * delta;
 
-        bounds.setPosition(newX, newY);
+        this.bounds.setPosition(newX, newY);
         for (Rectangle rectangle : this.gameScreen.getCollisionRectangles()) {
-            if (bounds.overlaps(rectangle)) {
-                newX = position.x;
-                newY = position.y;
-                velocity.set(0, 0);
+            if (this.bounds.overlaps(rectangle)) {
+                newX = this.position.x;
+                newY = this.position.y;
+                this.velocity.set(0, 0);
             }
         }
 
-        position.set(newX, newY);
-        bounds.setPosition(newX, newY);
+        this.position.set(newX, newY);
+        this.bounds.setPosition(newX, newY);
         this.gameScreen.updatePlayerPosition(newX, newY);
 
         if (!this.onRedDoor && !this.onGreenDoor) {
-            this.setCurrentDirection(position, lastPosition);
+            this.setCurrentDirection(this.position, this.lastPosition);
         }
         checkDoors();
         checkRedFinish();
@@ -186,7 +188,6 @@ public class Player {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     /**
@@ -197,13 +198,13 @@ public class Player {
     public String checkStars() {
         String path;
         int bestTimeForLevel = this.findBestTimeForLevel();
-        if (gameScreen.getTimePassed() <= bestTimeForLevel) {
+        if (this.gameScreen.getTimePassed() <= bestTimeForLevel) {
             path = "stars/threeStars.png";
-        } else if (gameScreen.getTimePassed() > bestTimeForLevel
-                && gameScreen.getTimePassed() <= (bestTimeForLevel + 5)) {
+        } else if (this.gameScreen.getTimePassed() > bestTimeForLevel
+                && this.gameScreen.getTimePassed() <= (bestTimeForLevel + 5)) {
             path = "stars/twoStars.png";
-        } else if (gameScreen.getTimePassed() > (bestTimeForLevel + 5)
-                && gameScreen.getTimePassed() <= (bestTimeForLevel + 10)) {
+        } else if (this.gameScreen.getTimePassed() > (bestTimeForLevel + 5)
+                && this.gameScreen.getTimePassed() <= (bestTimeForLevel + 10)) {
             path = "stars/oneStar.png";
         } else {
             path = "stars/zeroStars.png";
@@ -236,7 +237,7 @@ public class Player {
      */
     public void checkStandardFinish() {
         for (Rectangle rectangle : this.gameScreen.getStandardFinishRectangles()) {
-            if (rectangle.overlaps(bounds)) {
+            if (rectangle.overlaps(this.bounds)) {
                 this.saveTime();
                 String path = checkStars();
                 if (this.gameScreen.getCurrentLevel() == 4) {
@@ -257,9 +258,10 @@ public class Player {
      */
     public void checkRedFinish() {
         for (Rectangle rectangle : this.gameScreen.getRedFinishRectangles()) {
-            if (rectangle.overlaps(bounds)) {
-                if (this.currentTexture == textureRed) {
-                    this.gameScreen.getGame().setScreen(new GameOver(this.gameScreen.getGame(), GameScreen.getLevels().get(this.gameScreen.getCurrentLevel())));
+            if (rectangle.overlaps(this.bounds)) {
+                if (this.currentTexture == this.textureRed) {
+                    this.gameScreen.getGame().setScreen(new GameOver(this.gameScreen.getGame(),
+                            GameScreen.getLevels().get(this.gameScreen.getCurrentLevel())));
                 } else {
                     this.saveTime();
                     String path = checkStars();
@@ -282,9 +284,10 @@ public class Player {
      */
     public void checkGreenFinish() {
         for (Rectangle rectangle : this.gameScreen.getGreenFinishRectangles()) {
-            if (rectangle.overlaps(bounds)) {
+            if (rectangle.overlaps(this.bounds)) {
                 if (this.currentTexture == textureGreen) {
-                    this.gameScreen.getGame().setScreen(new GameOver(this.gameScreen.getGame(), GameScreen.getLevels().get(this.gameScreen.getCurrentLevel() + 1)));
+                    this.gameScreen.getGame().setScreen(new GameOver(this.gameScreen.getGame(),
+                            GameScreen.getLevels().get(this.gameScreen.getCurrentLevel() + 1)));
                 } else {
                     this.saveTime();
                     String path = checkStars();
@@ -318,23 +321,24 @@ public class Player {
      * Check doors.
      */
     public void checkDoors() {
-        allowMovement();
-        boolean wasOnRedDoor = onRedDoor;
-        boolean wasOnGreenDoor = onGreenDoor;
-        onRedDoor = false;
-        onGreenDoor = false;
+        this.allowMovement();
+        boolean wasOnRedDoor = this.onRedDoor;
+        boolean wasOnGreenDoor = this.onGreenDoor;
+        this.onRedDoor = false;
+        this.onGreenDoor = false;
 
 
         for (Rectangle rectangle : this.gameScreen.getRedDoorsRectangles()) {
-            if (bounds.overlaps(rectangle)) {
-                onRedDoor = true;
-                if (!Objects.equals(currentTexture.toString(), textureRed.toString())) {
+            if (this.bounds.overlaps(rectangle)) {
+                this.onRedDoor = true;
+                if (!Objects.equals(this.currentTexture.toString(), this.textureRed.toString())) {
                     this.gameScreen.getGame().getSkinSettings().setCurrentColor("Red");
-                    currentTexture = this.gameScreen.getGame().getSkinSettings().getRedCurrentSkin();
+                    this.currentTexture = this.gameScreen.getGame().getSkinSettings().getRedCurrentSkin();
                     this.gameScreen.getGame().getSoundSettings().playDoorSound();
                 } else {
                     if (!wasOnRedDoor) {
-                        gameScreen.getGame().setScreen(new GameOver(gameScreen.getGame(), GameScreen.getLevels().get(this.gameScreen.getCurrentLevel() + 1)));
+                        this.gameScreen.getGame().setScreen(new GameOver(this.gameScreen.getGame(),
+                                GameScreen.getLevels().get(this.gameScreen.getCurrentLevel() + 1)));
                     }
                 }
                 prohibitMovementBack();
@@ -344,18 +348,19 @@ public class Player {
 
         for (Rectangle rectangle : this.gameScreen.getGreenDoorsRectangles()) {
             if (bounds.overlaps(rectangle)) {
-                onGreenDoor = true;
+                this.onGreenDoor = true;
                 if (!Objects.equals(currentTexture.toString(), textureGreen.toString())) {
                     this.gameScreen.getGame().getSkinSettings().setCurrentColor("Green");
-                    currentTexture = this.gameScreen.getGame().getSkinSettings().getGreenCurrentSkin();
+                    this.currentTexture = this.gameScreen.getGame().getSkinSettings().getGreenCurrentSkin();
                     this.gameScreen.getGame().getSoundSettings().playDoorSound();
 
                 } else {
                     if (!wasOnGreenDoor) {
-                        gameScreen.getGame().setScreen(new GameOver(gameScreen.getGame(), GameScreen.getLevels().get(this.gameScreen.getCurrentLevel() + 1)));
+                        this.gameScreen.getGame().setScreen(new GameOver(this.gameScreen.getGame(),
+                                GameScreen.getLevels().get(this.gameScreen.getCurrentLevel() + 1)));
                     }
                 }
-                prohibitMovementBack();
+                this.prohibitMovementBack();
                 break;
             }
         }
@@ -366,7 +371,7 @@ public class Player {
      */
     public void checkHorizontalDoors() {
         for (Rectangle rectangle : this.gameScreen.getHorizontalDoorsRectangles()) {
-            if (bounds.overlaps(rectangle)) {
+            if (this.bounds.overlaps(rectangle)) {
                 this.doorType = DoorTypes.HORIZONTAL;
             }
         }
@@ -377,7 +382,7 @@ public class Player {
      */
     public void checkVerticalDoors() {
         for (Rectangle rectangle : this.gameScreen.getVerticalDoorsRectangles()) {
-            if (bounds.overlaps(rectangle)) {
+            if (this.bounds.overlaps(rectangle)) {
                 this.doorType = DoorTypes.VERTICAL;
             }
         }
@@ -387,22 +392,22 @@ public class Player {
      * Prohibit movement back if player touches the door.
      */
     public void prohibitMovementBack() {
-        if (this.doorType == DoorTypes.HORIZONTAL && (currentDirection == Directions.UP
-                || currentDirection == Directions.UP_LEFT
-                || currentDirection == Directions.UP_RIGHT)) {
+        if (this.doorType == DoorTypes.HORIZONTAL && (this.currentDirection == Directions.UP
+                || this.currentDirection == Directions.UP_LEFT
+                || this.currentDirection == Directions.UP_RIGHT)) {
             this.prohibitMovingDown = true;
-        } else if (this.doorType == DoorTypes.HORIZONTAL && (currentDirection == Directions.DOWN
-                || currentDirection == Directions.DOWN_LEFT
-                || currentDirection == Directions.DOWN_RIGHT)) {
+        } else if (this.doorType == DoorTypes.HORIZONTAL && (this.currentDirection == Directions.DOWN
+                || this.currentDirection == Directions.DOWN_LEFT
+                || this.currentDirection == Directions.DOWN_RIGHT)) {
             this.prohibitMovingUp = true;
-        } else if (this.doorType == DoorTypes.VERTICAL && (currentDirection == Directions.LEFT
-                || currentDirection == Directions.DOWN_LEFT
-                || currentDirection == Directions.UP_LEFT)) {
+        } else if (this.doorType == DoorTypes.VERTICAL && (this.currentDirection == Directions.LEFT
+                || this.currentDirection == Directions.DOWN_LEFT
+                || this.currentDirection == Directions.UP_LEFT)) {
             this.prohibitMovingRight = true;
 
-        } else if (this.doorType == DoorTypes.VERTICAL && (currentDirection == Directions.RIGHT
-                || currentDirection == Directions.DOWN_RIGHT
-                || currentDirection == Directions.UP_RIGHT
+        } else if (this.doorType == DoorTypes.VERTICAL && (this.currentDirection == Directions.RIGHT
+                || this.currentDirection == Directions.DOWN_RIGHT
+                || this.currentDirection == Directions.UP_RIGHT
         )) {
             this.prohibitMovingLeft = true;
         }
@@ -418,7 +423,6 @@ public class Player {
         this.prohibitMovingRight = false;
     }
 
-
     /**
      * Set current direction.
      *
@@ -428,39 +432,39 @@ public class Player {
     public void setCurrentDirection(Vector2 currentPos, Vector2 lastPos) {
         if (currentPos.x - lastPos.x > 0
                 && currentPos.y - lastPos.y == 0
-                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyRight.toUpperCase()))) {
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(this.keyRight.toUpperCase()))) {
             this.currentDirection = Directions.RIGHT;
         } else if (currentPos.x - lastPos.x < 0
                 && currentPos.y - lastPos.y == 0
-                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyLeft.toUpperCase()))) {
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(this.keyLeft.toUpperCase()))) {
             this.currentDirection = Directions.LEFT;
         } else if (currentPos.x - lastPos.x == 0
                 && currentPos.y - lastPos.y > 0
-                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyUp.toUpperCase()))) {
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(this.keyUp.toUpperCase()))) {
             this.currentDirection = Directions.UP;
         } else if (currentPos.x - lastPos.x == 0
                 && currentPos.y - lastPos.y < 0
-                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyDown.toUpperCase()))) {
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(this.keyDown.toUpperCase()))) {
             this.currentDirection = Directions.DOWN;
         } else if (currentPos.x - lastPos.x > 0
                 && currentPos.y - lastPos.y > 0
-                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyUp.toUpperCase()))
-                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyRight.toUpperCase()))) {
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(this.keyUp.toUpperCase()))
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(this.keyRight.toUpperCase()))) {
             this.currentDirection = Directions.UP_RIGHT;
         } else if (currentPos.x - lastPos.x < 0
                 && currentPos.y - lastPos.y < 0
-                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyDown.toUpperCase()))
-                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyLeft.toUpperCase()))) {
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(this.keyDown.toUpperCase()))
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(this.keyLeft.toUpperCase()))) {
             this.currentDirection = Directions.DOWN_LEFT;
         } else if (currentPos.x - lastPos.x > 0
                 && currentPos.y - lastPos.y < 0
-                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyDown.toUpperCase()))
-                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyRight.toUpperCase()))) {
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(this.keyDown.toUpperCase()))
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(this.keyRight.toUpperCase()))) {
             this.currentDirection = Directions.DOWN_RIGHT;
         } else if (currentPos.x - lastPos.x < 0
                 && currentPos.y - lastPos.y > 0
-                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyUp.toUpperCase()))
-                && Gdx.input.isKeyPressed(Input.Keys.valueOf(keyLeft.toUpperCase()))) {
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(this.keyUp.toUpperCase()))
+                && Gdx.input.isKeyPressed(Input.Keys.valueOf(this.keyLeft.toUpperCase()))) {
             this.currentDirection = Directions.UP_LEFT;
         }
     }
@@ -471,23 +475,14 @@ public class Player {
      * @param batch sprite batch
      */
     public void render(SpriteBatch batch) {
-        batch.draw(currentTexture, position.x, position.y, playerWidth, playerHeight);
+        batch.draw(this.currentTexture, this.position.x, this.position.y, this.playerWidth, this.playerHeight);
     }
 
     /**
      * Dispose.
      */
     public void dispose() {
-        textureRed.dispose();
-        textureGreen.dispose();
-    }
-
-    /**
-     * Get current player texture.
-     *
-     * @return current player texture
-     */
-    public Texture getCurrentTexture() {
-        return currentTexture;
+        this.textureRed.dispose();
+        this.textureGreen.dispose();
     }
 }

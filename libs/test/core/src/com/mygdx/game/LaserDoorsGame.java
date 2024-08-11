@@ -1,56 +1,64 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.screens.MainMenu;
-import com.mygdx.game.screens.Settings;
 import com.mygdx.game.settings.ControlSettings;
+import com.mygdx.game.settings.DoorCrossingSettings;
 import com.mygdx.game.settings.SkinSettings;
 import com.mygdx.game.settings.SoundSettings;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
 public class LaserDoorsGame extends Game {
-	private ControlSettings controlSettings;
-	private SoundSettings soundSettings;
-	private SkinSettings skinSettings;
+    private ControlSettings controlSettings;
+    private SoundSettings soundSettings;
+    private SkinSettings skinSettings;
+    private DoorCrossingSettings doorCrossingSettings;
 
-	public LaserDoorsGame() {
-	}
+    public LaserDoorsGame() {
+    }
 
-	@Override
-	public void create () {
-		this.setScreen(new MainMenu(this));
-		this.controlSettings = new ControlSettings();
-		this.soundSettings = new SoundSettings();
-		this.skinSettings = new SkinSettings();
-		this.soundSettings.playBgMusic();
-	}
+    @Override
+    public void create() {
+        this.setScreen(new MainMenu(this));
+        this.controlSettings = new ControlSettings();
+        this.soundSettings = new SoundSettings();
+        this.skinSettings = new SkinSettings();
+        this.doorCrossingSettings = new DoorCrossingSettings();
+        this.soundSettings.playBgMusic();
+    }
 
-	@Override
-	public void render () {
-		super.render();
-	}
-	
-	@Override
-	public void dispose () {
-	}
+    @Override
+    public void render() {
+        super.render();
+    }
 
-	public ControlSettings getControlSettings() {
-		return controlSettings;
-	}
+    @Override
+    public void dispose() {
+    }
 
-	public SoundSettings getSoundSettings() {
-		return soundSettings;
-	}
+    /**
+     * Get control settings.
+     *
+     * @return control settings
+     */
+    public ControlSettings getControlSettings() {
+        return controlSettings;
+    }
 
-	public SkinSettings getSkinSettings() {
-		return skinSettings;
-	}
+    /**
+     * Get sound settings.
+     *
+     * @return sound settings
+     */
+    public SoundSettings getSoundSettings() {
+        return soundSettings;
+    }
+
+    /**
+     * Get skin settings.
+     *
+     * @return skin settings
+     */
+    public SkinSettings getSkinSettings() {
+        return skinSettings;
+    }
 }

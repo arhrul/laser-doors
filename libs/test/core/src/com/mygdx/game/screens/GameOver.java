@@ -8,32 +8,38 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.LaserDoorsGame;
 
 public class GameOver implements Screen {
-    private LaserDoorsGame game;
-    private SpriteBatch batch;
+    private final LaserDoorsGame game;
+    private final SpriteBatch batch;
 
-    private Texture buttonRestart = new Texture("buttons/buttonRestart.png");
-    private Texture buttonRestartDown = new Texture("buttons/ButtonRestartDown.png");
+    private final Texture buttonRestart = new Texture("buttons/buttonRestart.png");
+    private final Texture buttonRestartDown = new Texture("buttons/ButtonRestartDown.png");
 
-    private Texture youLose = new Texture("youLose.png");
+    private final Texture youLose = new Texture("youLose.png");
 
-    private Texture buttonMenu = new Texture("buttons/buttonMenu.png");
-    private Texture buttonMenuDown = new Texture("buttons/buttonMenuDown.png");
+    private final Texture buttonMenu = new Texture("buttons/buttonMenu.png");
+    private final Texture buttonMenuDown = new Texture("buttons/buttonMenuDown.png");
 
-    private float buttonRestartX, buttonRestartY;
+    private final float buttonRestartX;
+    private final float buttonRestartY;
     private float btnRestartWidth, btnRestartHeight;
 
-    private float youLoseX, youLoseY;
-    private float youLoseWidth, youLoseHeight;
+    private final float youLoseX;
+    private final float youLoseY;
+    private final float youLoseWidth;
+    private final float youLoseHeight;
 
-    private float buttonMenuX, buttonMenuY;
-    private float buttonMenuWidth, buttonMenuHeight;
+    private final float buttonMenuX;
+    private final float buttonMenuY;
+    private final float buttonMenuWidth;
+    private final float buttonMenuHeight;
 
-    private float screenWidth, screenHeight;
+    private final float screenWidth, screenHeight;
 
-    String levelPath;
+    private final String levelPath;
 
     /**
      * Game over screen.
+     *
      * @param game game
      */
     public GameOver(LaserDoorsGame game, String levelPath) {
@@ -69,7 +75,6 @@ public class GameOver implements Screen {
 
     @Override
     public void show() {
-
     }
 
     @Override
@@ -83,6 +88,9 @@ public class GameOver implements Screen {
         this.batch.end();
     }
 
+    /**
+     * Checks and handles the logic for restart.
+     */
     public void restartGame() {
         if (this.isButtonRestart()) {
             this.batch.draw(buttonRestartDown, buttonRestartX, buttonRestartY);
@@ -92,12 +100,16 @@ public class GameOver implements Screen {
                 game.setScreen(new GameScreen(game,
                         GameScreen.getLevels().get(GameScreen.getLevels().indexOf(levelPath) - 1)));
             }
-        }
-        else {
+        } else {
             this.batch.draw(buttonRestart, buttonRestartX, buttonRestartY);
         }
     }
 
+    /**
+     * Checks if the restart button is hovered.
+     *
+     * @return {@code true} if the restart button is pressed, {@code false} otherwise
+     */
     public boolean isButtonRestart() {
         return Gdx.input.getX() < buttonRestartX + btnRestartWidth
                 && Gdx.input.getX() > buttonRestartX

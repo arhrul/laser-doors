@@ -11,41 +11,50 @@ import java.util.Objects;
 
 
 public class YouWin implements Screen {
+    private final LaserDoorsGame game;
+    private final SpriteBatch batch;
 
-    private LaserDoorsGame game;
-    private SpriteBatch batch;
+    private final Texture buttonNextLevel = new Texture("buttons/buttonNextLevel.png");
+    private final Texture buttonNextLevelDown = new Texture("buttons/buttonNextLevelDown.png");
 
-    private Texture buttonNextLevel = new Texture("buttons/buttonNextLevel.png");
-    private Texture buttonNextLevelDown = new Texture("buttons/buttonNextLevelDown.png");
+    private final Texture buttonMenu = new Texture("buttons/buttonMenu.png");
+    private final Texture buttonMenuDown = new Texture("buttons/buttonMenuDown.png");
 
-    private Texture buttonMenu = new Texture("buttons/buttonMenu.png");
-    private Texture buttonMenuDown = new Texture("buttons/buttonMenuDown.png");
+    private final Texture buttonRestart = new Texture("buttons/buttonRestart.png");
+    private final Texture buttonRestartDown = new Texture("buttons/buttonRestartDown.png");
 
-    private Texture buttonRestart = new Texture("buttons/buttonRestart.png");
-    private Texture buttonRestartDown = new Texture("buttons/buttonRestartDown.png");
+    private final float buttonRestartWidth;
+    private final float buttonRestartHeight;
+    private final float buttonRestartX;
+    private final float buttonRestartY;
 
-    private float buttonRestartWidth, buttonRestartHeight;
-    private float buttonRestartX, buttonRestartY;
+    private final float buttonNextLevelWidth;
+    private final float buttonNextLevelHeight;
+    private final float buttonNextLevelX;
+    private final float buttonNextLevelY;
 
-    private float buttonNextLevelWidth, buttonNextLevelHeight;
-    private float buttonNextLevelX, buttonNextLevelY;
+    private final float buttonMenuWidth;
+    private final float buttonMenuHeight;
+    private final float buttonMenuX;
+    private final float buttonMenuY;
 
-    private float buttonMenuWidth, buttonMenuHeight;
-    private float buttonMenuX, buttonMenuY;
+    private final Texture youWin = new Texture("youWin.png");
 
-    private Texture youWin = new Texture("youWin.png");
+    private final float youWinX;
+    private final float youWinY;
+    private final float youWinWidth;
+    private final float youWinHeight;
 
-    private float youWinX, youWinY;
-    private float youWinWidth, youWinHeight;
+    private final Texture stars;
+    private final float starsWidth;
+    private final float starsHeight;
 
-    private Texture stars;
-    private float starsWidth, starsHeight;
+    private final float starsX;
+    private final float starsY;
 
-    private float starsX, starsY;
+    private final float screenWidth, screenHeight;
 
-    private float screenWidth, screenHeight;
-
-    private String levelPath;
+    private final String levelPath;
 
     /**
      * You win screen constructor.
@@ -62,8 +71,8 @@ public class YouWin implements Screen {
 
         this.batch = new SpriteBatch();
 
-        screenWidth = Gdx.graphics.getWidth();
-        screenHeight = Gdx.graphics.getHeight();
+        this.screenWidth = Gdx.graphics.getWidth();
+        this.screenHeight = Gdx.graphics.getHeight();
 
         this.starsWidth = 320;
         this.starsHeight = 100;
@@ -93,19 +102,11 @@ public class YouWin implements Screen {
         this.buttonRestartY = screenHeight / 2 - buttonRestartHeight / 2 - 250;
     }
 
-    /**
-     * Called when this screen becomes the current screen for a {@link LaserDoorsGame}.
-     */
     @Override
     public void show() {
 
     }
 
-    /**
-     * Called when the screen should render itself.
-     *
-     * @param delta the time in seconds since the last render
-     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
