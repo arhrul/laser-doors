@@ -321,12 +321,8 @@ public class Player {
      * Check doors.
      */
     public void checkDoors() {
-        this.allowMovement();
         boolean wasOnRedDoor = this.onRedDoor;
         boolean wasOnGreenDoor = this.onGreenDoor;
-        this.onRedDoor = false;
-        this.onGreenDoor = false;
-
 
         for (Rectangle rectangle : this.gameScreen.getRedDoorsRectangles()) {
             if (this.bounds.overlaps(rectangle)) {
@@ -343,6 +339,9 @@ public class Player {
                 }
                 prohibitMovementBack();
                 break;
+            } else {
+                this.onRedDoor = false;
+                this.allowMovement();
             }
         }
 
@@ -362,6 +361,9 @@ public class Player {
                 }
                 this.prohibitMovementBack();
                 break;
+            } else {
+                this.onGreenDoor = false;
+                this.allowMovement();
             }
         }
     }
